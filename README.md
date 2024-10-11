@@ -7,10 +7,17 @@ TrivialVerseQuiz es un bot de Telegram diseñado para ofrecer un juego de trivia
 
 ## Funciones Obligatorias
 
-Para desarrollar el bot, es necesario tener **Python 3** instalado en tu sistema. Además, necesitas instalar la biblioteca **pyTelegramBotAPI**, que permite interactuar con el API de Telegram Bot. Para instalarlo, abre la terminal de Visual Studio y ejecuta el siguiente comando:
+- Para desarrollar el bot, es necesario tener **Python 3** instalado en tu sistema. Además, necesitas instalar la biblioteca **pyTelegramBotAPI**, que permite interactuar con el API de Telegram Bot. Para instalarlo, abre la terminal de Visual Studio y ejecuta el siguiente comando:
 
 ```bash
 pip install pyTelegramBotAPI
+```
+
+- Pandas: Para manejar los datos del archivo ODS, necesitarás la biblioteca pandas. Puedes instalarla con:
+bash
+
+```
+pip install pandas
 ```
 
 ## Token
@@ -73,6 +80,16 @@ Envía una pregunta de trivia con opciones de respuesta.
 6. **trivia_response(call):**
 
  Maneja la respuesta del usuario a una pregunta de trivia.
+
+## Comando de Ayudas
+
+1. **help_command(message):**
+
+ Muestra la lista de comandos disponibles y sus explicaciones.
+
+2. **dlc(message):**
+
+ Informa sobre la funcionalidad DLC que está en desarrollo.
 
 ## Ejemplo de Pregunta
 

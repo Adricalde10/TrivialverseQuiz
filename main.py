@@ -1,112 +1,115 @@
-import pandas as pd 
-import telebot 
-from telebot import types 
- 
-# Tu token del bot de Telegram 
-TOKEN = '7455775782:AAGAnwCVb1yitZY-dXUMflFQPeOSY4WEyyc' 
-bot = telebot.TeleBot(TOKEN) 
- 
-# Funció per enviar un missatge de benvinguda amb informació detallada 
-@bot.message_handler(commands=['start']) 
-def start(message): 
-    user_name = message.from_user.first_name  # Obtén el primer nom de l'usuari 
-    welcome_text = ( 
-        "¿Qué es lo que puede hacer nuestro bot @TrivialverseQuizBot?\n\n" 
-        "Este es un bot de preguntas tipo trivial que te permite poner a prueba tus conocimientos. " 
-        "Si quieres competir con amigos, simplemente abre el perfil del bot y usa el botón 'Añadir a grupo'.\n\n" 
-        "Envía /start para comenzar el quiz.\n" 
-        "Escribe /stop cuando quieras detener el quiz.\n" 
-        "Envía /stats si quieres ver quién va ganando.\n" 
-    ) 
-     
-    # Enviar el mensaje de bienvenida centrado 
-    bot.send_message(message.chat.id, welcome_text, parse_mode='Markdown') 
-    show_menu(message.chat.id) 
- 
-# Funció per mostrar el menú amb botons d'opcions 
-def show_menu(chat_id): 
-    markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)  # Crea un teclat a la pantalla 
-    menu_button = types.KeyboardButton("☰ Menú")  # Botó amb 3 ratlles "menú" 
-    markup.add(menu_button) 
-    bot.send_message(chat_id, "Prem el botó ☰ Menú per veure les opcions disponibles.", reply_markup=markup) 
- 
-# Funció per gestionar el desplegable de "tres ratlles" 
-@bot.message_handler(func=lambda message: message.text == "☰ Menú") 
-def menu_handler(message): 
-    markup = types.InlineKeyboardMarkup()  # Crea el teclat en línia per mostrar les opcions 
-    commands = [ 
-        ("Iniciar partida", "start_game"), 
-        ("Aturar partida", "stop_game"), 
-        ("Rànquing de jugadors", "top_players"), 
-        ("DLC", "dlc_content"), 
-        ("Mode ràpid", "fast_mode"), 
-        ("Ajuda", "help") 
-    ] 
-    for command, callback_data in commands: 
-        markup.add(types.InlineKeyboardButton(command, callback_data=callback_data)) 
-     
-    bot.send_message(message.chat.id, "Selecciona una opció del menú:", reply_markup=markup) 
- 
-# Funció per gestionar els botons del menú en línia 
-@bot.callback_query_handler(func=lambda call: True) 
-def handle_callback(call): 
-    if call.data == "start_game": 
-        start_game(call.message) 
-    elif call.data == "stop_game": 
-        stop(call.message) 
-    elif call.data == "top_players": 
-        top(call.message) 
-    elif call.data == "dlc_content": 
-        dlc(call.message) 
-    elif call.data == "fast_mode": 
-        time(call.message) 
-    elif call.data == "help": 
-        help_command(call.message) 
- 
- 
- 
- 
-# Ejemplo poco funcional 
- 
- 
-# Funció per començar una partida de trivia 
-def start_game(message): 
-    bot.send_message(message.chat.id, "Comença el trivial! Tria la resposta correcta.") 
-    send_trivia_question(message.chat.id) 
- 
-# Funció per enviar una pregunta de trivial amb opcions (A, B, C, D) 
-def send_trivia_question(chat_id): 
-    question = "Con que se craftea un corazon del mar?" 
-    options = ["A) Corazon del mar i prismarina", "B) corazon del mar i pepitas de acero", "C) Corazon del mar i caparazones de nautilus", "D) caparazones nautilus, prismarina i piedra luminosa"] 
- 
-    markup = types.InlineKeyboardMarkup() 
-    option_buttons = [ 
-        types.InlineKeyboardButton("A", callback_data="A"), 
-        types.InlineKeyboardButton("B", callback_data="B"), 
-        types.InlineKeyboardButton("C", callback_data="C"), 
-        types.InlineKeyboardButton("D", callback_data="D") 
-    ] 
-     
-    for button in option_buttons: 
-        markup.add(button) 
- 
-    bot.send_message(chat_id, question, reply_markup=markup) 
- 
-# Funció per gestionar les respostes de les opcions de trivia 
-@bot.callback_query_handler(func=lambda call: call.data in ['A', 'B', 'C', 'D']) 
-def trivia_response(call): 
-    correct_answer = "C" 
-    user_answer = call.data 
- 
-    if user_answer == correct_answer:
-        bot.send_message(call.message.chat.id, "Correcte! 🎉") 
-    else: 
-        bot.send_message(call.message.chat.id, "Incorrecte. La resposta correcta és C) caparazones del mar i caparazones nautilus.") 
- 
- 
- 
- 
-# Altres funcions del bot 
+import telebot
+from telebot import types
+import pandas as pd
+import random
+
+# Token del bot de Telegram
+TOKEN = '7455775782:AAGAnwCVb1yitZY-dXUMflFQPeOSY4WEyyc'
+bot = telebot.TeleBot(TOKEN)
+
+# Ruta del archivo ODS (LibreOffice)
+ODS_FILE = 'Preguntas bot.ods'
+
+# Variables para controlar el estado del juego
+current_question = None
+is_game_active = False  # Variable para controlar si el juego está activo
+
+# Función para leer datos de un archivo ODS y mostrarlos al usuario
+def leer_ods():
+    try:
+        hojas_dict = pd.read_excel(ODS_FILE, engine='odf', sheet_name=None)  # Lee todas las hojas
+        return hojas_dict
+    except Exception as e:
+        print(f"Error leyendo el archivo ODS: {e}")
+        return None
+
+# Función para obtener preguntas y respuestas de una hoja
+def obtener_preguntas_y_respuestas(df):
+    preguntas = []
+    for index, row in df.iterrows():
+        pregunta = row[0]  # Asumiendo que la primera columna es la pregunta
+        respuestas = row[2:].dropna().tolist()  # Las respuestas están en las columnas siguientes
+        preguntas.append((pregunta, respuestas))
+    return preguntas
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    user_name = message.from_user.first_name  # Obtén el nombre del usuario
+    bot.reply_to(message, f"Benvingut a TrivialverseQuiz, {user_name}! Tria una categoria per començar.")
+    show_menu(message.chat.id)
+
+@bot.message_handler(commands=['Quiz'])
+def enviar_Quiz(message):
+    global current_question, is_game_active  # Hacemos que las variables sean globales
+    is_game_active = True  # Iniciar el juego
+    hojas = leer_ods()
+    
+    if hojas is None:
+        bot.reply_to(message, "Error al leer el archivo ODS. Asegúrate de que el archivo esté disponible y tenga el formato correcto.")
+        return
+
+    # Envia una pregunta de una de las hojas
+    for nombre_hoja, df in hojas.items():
+        preguntas = obtener_preguntas_y_respuestas(df)
+        
+        # Selecciona una pregunta aleatoria
+        if preguntas:
+            pregunta, respuestas = random.choice(preguntas)
+            current_question = (pregunta, respuestas)  # Almacena la pregunta actual
+            enviar_pregunta_con_respuestas(message.chat.id, pregunta, respuestas)
+        else:
+            bot.reply_to(message, f"La hoja '{nombre_hoja}' no contiene preguntas.")
+        
+        break  # Elimina esta línea si quieres obtener preguntas de más de una hoja
+
+def enviar_pregunta_con_respuestas(chat_id, pregunta, respuestas):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    
+    # Agregar botones para cada respuesta
+    for respuesta in respuestas:
+        markup.add(types.KeyboardButton(respuesta))
+    
+    bot.send_message(chat_id, pregunta, reply_markup=markup)
+
+@bot.message_handler(func=lambda message: is_game_active and message.text not in ['/stop', '/start'])
+def handle_response(message):
+    respuesta_usuario = message.text
+    # Aquí puedes manejar la lógica para verificar si la respuesta es correcta
+    # Esto depende de cómo quieras estructurar la correcta
+    # Por ahora, simplemente responderemos con un mensaje
+    bot.reply_to(message, f"Has elegido: {respuesta_usuario}. ¡Gracias por responder!")
+
+    # Llama a la función para enviar una nueva pregunta
+    enviar_nueva_pregunta(message.chat.id)
+
+def enviar_nueva_pregunta(chat_id):
+    global current_question  # Usar la variable global
+    hojas = leer_ods()
+    
+    if hojas is None:
+        bot.reply_to(chat_id, "Error al leer el archivo ODS.")
+        return
+
+    # Envia una nueva pregunta de una de las hojas
+    for nombre_hoja, df in hojas.items():
+        preguntas = obtener_preguntas_y_respuestas(df)
+        # Selecciona una pregunta aleatoria
+        if preguntas:
+            pregunta, respuestas = random.choice(preguntas)
+            current_question = (pregunta, respuestas)  # Actualiza la pregunta actual
+            enviar_pregunta_con_respuestas(chat_id, pregunta, respuestas)
+        else:
+            bot.reply_to(chat_id, f"La hoja '{nombre_hoja}' no contiene preguntas.")
+        
+        break  # Elimina esta línea si quieres obtener preguntas de más de una hoja
+
+@bot.message_handler(commands=['stop'])
+def stop_game(message):
+    global is_game_active  # Hacemos que la variable sea global
+    is_game_active = False  # Detener el juego
+    bot.reply_to(message, "El juego ha sido detenido. Puedes iniciar nuevamente con el comando /start.")
+
+#Funció per mostrar les comandes disponibles amb explicació detallada''' 
 @bot.message_handler(commands=['help']) 
 def help_command(message): 
     user_name = message.from_user.first_name  # Obtén el nom de l'usuari 
@@ -116,32 +119,24 @@ def help_command(message):
         "/stop - Atura la partida actual\n" 
         "/top - Mostra el rànquing de jugadors, quan estigui disponible\n" 
         "/dlc - Activa continguts extres (DLC), en desenvolupament\n" 
-        "/time - Activa el mode de joc amb temps\n" 
         "/help - Mostra aquest missatge d'ajuda\n" 
     ) 
-    bot.reply_to(message, help_text) 
- 
-@bot.message_handler(commands=['stop']) 
-def stop(message): 
-    user_name = message.from_user.first_name  # Obtén el nom de l'usuari 
-    bot.reply_to(message, f"{user_name}, has aturat la partida. Pots reiniciar-la amb /start.") 
- 
-@bot.message_handler(commands=['top']) 
-def top(message): 
-    user_name = message.from_user.first_name  # Obtén el nom de l'usuari 
-    bot.reply_to(message, f"{user_name}, el rànquing encara no està disponible. Estem treballant-hi!") 
- 
-@bot.message_handler(commands=['dlc']) 
-def dlc(message): 
-    user_name = message.from_user.first_name  # Obtén el nom de l'usuari 
-    bot.reply_to(message, f"{user_name}, la funcionalitat DLC encara no està disponible. Estem treballant en ella.") 
- 
-@bot.message_handler(commands=['time']) 
-def time(message): 
-    user_name = message.from_user.first_name  # Obtén el nom de l'usuari 
-    bot.reply_to(message, f"{user_name}, has activat el mode amb temps. Prepara't per jugar ràpid!") 
- 
-# Inici del bot 
-print("") 
-print("El bot està funcionant. Prem Ctrl+C per aturar-lo.") 
+    bot.reply_to(message, help_text)
+
+#Funció per activar continguts extres (DLC) amb explicació detallada
+@bot.message_handler(commands=['dlc'])
+def dlc(message):
+    user_name = message.from_user.first_name  # Obtén el nom de l'usuari
+    bot.reply_to(message, f"{user_name}, la funcionalitat DLC encara no està disponible. Estem treballant en ella.")
+
+def show_menu(chat_id):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=False)
+    btn_excel = types.KeyboardButton('/Quiz')  # Agrega un botón para ver los datos del archivo ODS
+    btn_help = types.KeyboardButton('/help')
+    btn_stop = types.KeyboardButton('/stop')  # Agrega un botón para detener el juego
+    markup.add(btn_excel, btn_help, btn_stop)
+    bot.send_message(chat_id, "Prem un botó per seleccionar una opció:", reply_markup=markup)
+
+# Inici del bot
+print("El bot està funcionant. Prem Ctrl+C per aturar-lo.")
 bot.polling()
