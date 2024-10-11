@@ -59,10 +59,6 @@ Detiene la partida actual.
 
 Muestra el ranking de jugadores (aún en desarrollo).
 
-6. **/time**
-
- Activa el modo de juego con tiempo.
-
 5. **/dlc**
 
 Indica que el contenido adicional (DLC) está en desarrollo.
@@ -136,6 +132,16 @@ A) Corazón del mar y prismarina
 B) Corazón del mar y pepitas de acero
 C) Corazón del mar y caparazones de nautilus
 D) Caparazones de nautilus, prismarina y piedra luminosa
+
+## Puntuaciones
+
+- Hemos añadido un sistema de puntuacion cada vez que acierte la pregunta este sumara un punto, en caso de falla el juego terminara, para volver a empezar tienes que volver a ejecutar la comanda **/start**,
+
+- Para observar las puntuaciones totales que has echo solo tienes que poner **/top** y te mostrara tu puntuacion de tu anterior partida, aqui saldran las demas puntuaciones de todo el mundo
+
+## Terminos Legales
+
+- Hemos añadido los terminos legales porque nosotros somos una empresa que colaborara con contras de empresas de esta industria de Anime y Videojuegos.
 
 ## Finalizar Bot
 
