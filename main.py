@@ -93,6 +93,7 @@ def enviar_nueva_pregunta(chat_id):
     # Envia una nueva pregunta de una de las hojas
     for nombre_hoja, df in hojas.items():
         preguntas = obtener_preguntas_y_respuestas(df)
+
         # Selecciona una pregunta aleatoria
         if preguntas:
             pregunta, respuestas = random.choice(preguntas)

@@ -29,6 +29,18 @@ TOKEN = '7455775782:AAGAnwCVb1yitZY-dXUMflFQPeOSY4WEyyc'
 bot = telebot.TeleBot(TOKEN)
 ```
 
+## Implementacion Archvi ODS
+
+- Para que el bot nos muestre las preguntas hemos tenido que descargarlo del drive ja que no sabiamos como conjuntar el archivo drive, por eso lo hemos hecho de manera local descargando el archivo y poniendolo en la misma carpeta.
+
+para ejecutar el archivo tenemos que utilitzar este comando
+
+```
+ODS_FILE = 'Preguntas bot.ods'
+
+```
+esto sirve para que encuentre el archivo
+
 ## Funcionalidades y Comandos Principales
 
 1. **/start**
@@ -91,6 +103,29 @@ Envía una pregunta de trivia con opciones de respuesta.
 
  Informa sobre la funcionalidad DLC que está en desarrollo.
 
+ ## Obtencion de preguntas y Respuestas
+
+ - para que el bot recorra las preguntas mediante el archivo ods, tiene que leer el archivo con la siguiente comanda
+
+ ```
+hojas_dict = pd.read_excel(ODS_FILE, engine='odf', sheet_name=None)
+ ```
+
+ 1. **pd.read_excel:**
+
+Es una funcion de Pandas que sirve para leer archivos Excel, y es compatible com los archivos ODS de libreOffice si utilizamos esta extencion  **engine='odf'**
+
+2. **sheet_name=None:**
+
+ Esto le dice a la función que debe leer todas las hojas del archivo
+
+Para las Respuestas hemos creado una nueva variable donde recorrera toda la hoja mediante un for para hacerlo en bucle empezando desde la primera linea
+```
+for index, row in df.iterrows():
+    pregunta = row[0]  # Asumiendo que la primera columna es la pregunta
+    respuestas = row[2:].dropna().tolist()  # Las respuestas están en las columnas siguientes
+    preguntas.append((pregunta, respuestas))
+```
 ## Ejemplo de Pregunta
 
 El bot puede enviar preguntas de trivia como:
