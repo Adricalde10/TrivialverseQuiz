@@ -44,38 +44,7 @@ def start(message):
     scores[user_id] = 0  # Inicializa la puntuación del usuario
     score = 0  # Reinicia la puntuación al iniciar el juego
     user_name = message.from_user.first_name  # Obtén el nombre del usuario
-    
-    # Enviar términos y condiciones
-    terms_and_conditions = (
-        "Términos y Condiciones de Uso para TrivialverseQuiz\n\n"
-        "1. Aceptación de los Términos\n"
-        "Al acceder o utilizar el bot de Telegram TrivialverseQuiz, aceptas cumplir con estos Términos y Condiciones. "
-        "Si no estás de acuerdo con alguna parte de estos términos, no debes usar el bot.\n\n"
-        "2. Descripción del Servicio\n"
-        "TrivialverseQuiz es un bot de trivia que permite a los usuarios participar en juegos de preguntas y respuestas. "
-        "Los usuarios pueden seleccionar categorías de preguntas, responder a las preguntas y ver sus puntuaciones en un ránking.\n\n"
-        "3. Uso del Bot\n"
-        "- Debes tener al menos 13 años para utilizar el bot. Si eres menor de 13 años, necesitas el consentimiento de tus padres o tutores para utilizarlo.\n"
-        "- Te comprometes a usar el bot de manera responsable y a no participar en actividades fraudulentas o perjudiciales.\n"
-        "- Nos reservamos el derecho de suspender o cancelar tu acceso al bot si se determina que has violado estos Términos y Condiciones.\n\n"
-        "4. Propiedad Intelectual\n"
-        "Todo el contenido, incluidos los textos, gráficos, logos y otros materiales, es propiedad de TrivialverseQuiz o de sus licenciantes y está protegido por las leyes de derechos de autor y propiedad intelectual.\n\n"
-        "5. Datos del Usuario\n"
-        "- Nos comprometemos a proteger la privacidad de los usuarios. No recopilaremos información personal sin tu consentimiento.\n"
-        "- Los datos recopilados durante el uso del bot se utilizarán únicamente para fines relacionados con el funcionamiento del servicio.\n"
-        "- Puedes solicitar la eliminación de tu cuenta y datos en cualquier momento.\n\n"
-        "6. Modificaciones a los Términos\n"
-        "Nos reservamos el derecho de modificar estos Términos y Condiciones en cualquier momento. Te notificaremos sobre cambios significativos y tu uso continuado del bot después de tales modificaciones constituirá tu aceptación de los nuevos términos.\n\n"
-        "7. Limitación de Responsabilidad\n"
-        "En la medida máxima permitida por la ley, TrivialverseQuiz no será responsable de ningún daño directo, indirecto, incidental, especial o consecuente que resulte del uso o la imposibilidad de usar el bot.\n\n"
-        "8. Ley Aplicable\n"
-        "Estos Términos y Condiciones se regirán e interpretarán de acuerdo con las leyes de [Tu País o Estado]. "
-        "Cualquier disputa que surja en relación con estos términos será resuelta en los tribunales competentes de [Tu Ciudad o Estado].\n\n"
-        "9. Contacto\n"
-        "Si tienes preguntas sobre estos Términos y Condiciones, puedes ponerte en contacto con nosotros a través de [tu dirección de contacto o correo electrónico]."
-    )
-    
-    bot.reply_to(message, f"Benvingut a TrivialverseQuiz, {user_name}! Tria una categoria per començar.\n\n{terms_and_conditions}")
+    bot.reply_to(message, f"Benvingut a TrivialverseQuiz, {user_name}! Tria una categoria per començar.")
     show_menu(message.chat.id)
 
 @bot.message_handler(commands=['Quiz'])
@@ -124,7 +93,7 @@ def handle_response(message):
     if respuesta_usuario == correct_answer:
         score += 1  # Incrementar la puntuación en 1
         scores[user_id] = score  # Actualiza la puntuación en el diccionario
-        bot.reply_to(message, f"¡Correcto! 🎉 Tu puntuación actual es: {score}")
+        bot.reply_to(message, f"¡Correcto! 🎉 Tu puntuación +1")
         # Llama a la función para enviar una nueva pregunta
         enviar_nueva_pregunta(message.chat.id)
     else:
@@ -170,8 +139,9 @@ def help_command(message):
         "/start - Inicia el bot i comença una partida\n" 
         "/stop - Atura la partida actual\n" 
         "/top - Mostra el rànquing de jugadors, quan estigui disponible\n" 
-        "/dlc - Activa continguts extres (DLC), en desenvolupament\n" 
+        "/dlc - Activa continguts extres (DLC), en desenvolupament\n"
         "/help - Mostra aquest missatge d'ajuda\n" 
+        "/TCs - Mostra els termins i condicions legals"
     ) 
     bot.reply_to(message, help_text)
 
@@ -193,6 +163,42 @@ def show_top(message):
 
     bot.reply_to(message, ranking_message)
 
+
+    
+@bot.message_handler(commands=['TCs'])
+def send_terms_conditions(message):
+    # Términos y condiciones legales
+    terms_and_conditions = (
+        "Términos y Condiciones de Uso para TrivialverseQuiz\n\n"
+        "1. Aceptación de los Términos\n"
+        "Al acceder o utilizar el bot de Telegram TrivialverseQuiz, aceptas cumplir con estos Términos y Condiciones. "
+        "Si no estás de acuerdo con alguna parte de estos términos, no debes usar el bot.\n\n"
+        "2. Descripción del Servicio\n"
+        "TrivialverseQuiz es un bot de trivia que permite a los usuarios participar en juegos de preguntas y respuestas. "
+        "Los usuarios pueden seleccionar categorías de preguntas, responder a las preguntas y ver sus puntuaciones en un ránking.\n\n"
+        "3. Uso del Bot\n"
+        "- Debes tener al menos 13 años para utilizar el bot. Si eres menor de 13 años, necesitas el consentimiento de tus padres o tutores para utilizarlo.\n"
+        "- Te comprometes a usar el bot de manera responsable y a no participar en actividades fraudulentas o perjudiciales.\n"
+        "- Nos reservamos el derecho de suspender o cancelar tu acceso al bot si se determina que has violado estos Términos y Condiciones.\n\n"
+        "4. Propiedad Intelectual\n"
+        "Todo el contenido, incluidos los textos, gráficos, logos y otros materiales, es propiedad de TrivialverseQuiz o de sus licenciantes y está protegido por las leyes de derechos de autor y propiedad intelectual.\n\n"
+        "5. Datos del Usuario\n"
+        "- Nos comprometemos a proteger la privacidad de los usuarios. No recopilaremos información personal sin tu consentimiento.\n"
+        "- Los datos recopilados durante el uso del bot se utilizarán únicamente para fines relacionados con el funcionamiento del servicio.\n"
+        "- Puedes solicitar la eliminación de tu cuenta y datos en cualquier momento.\n\n"
+        "6. Modificaciones a los Términos\n"
+        "Nos reservamos el derecho de modificar estos Términos y Condiciones en cualquier momento. Te notificaremos sobre cambios significativos y tu uso continuado del bot después de tales modificaciones constituirá tu aceptación de los nuevos términos.\n\n"
+        "7. Limitación de Responsabilidad\n"
+        "En la medida máxima permitida por la ley, TrivialverseQuiz no será responsable de ningún daño directo, indirecto, incidental, especial o consecuente que resulte del uso o la imposibilidad de usar el bot.\n\n"
+        "8. Ley Aplicable\n"
+        "Estos Términos y Condiciones se regirán e interpretarán de acuerdo con las leyes de [Tu País o Estado]. "
+        "Cualquier disputa que surja en relación con estos términos será resuelta en los tribunales competentes de [Tu Ciudad o Estado].\n\n"
+        "9. Contacto\n"
+        "Si tienes preguntas sobre estos Términos y Condiciones, puedes ponerte en contacto con nosotros a través de [tu dirección de contacto o correo electrónico]."
+    )
+    
+    bot.send_message(message.chat.id, terms_and_conditions)
+
 # Funció per activar continguts extres (DLC) amb explicació detallada
 @bot.message_handler(commands=['dlc'])
 def dlc(message):
@@ -205,7 +211,9 @@ def show_menu(chat_id):
     btn_help = types.KeyboardButton('/help')
     btn_top = types.KeyboardButton('/top')
     btn_stop = types.KeyboardButton('/stop')  # Agrega un botón para detener el juego
-    markup.add(btn_excel, btn_top, btn_help, btn_stop)
+    btn_dlc = types.KeyboardButton('/dlc')
+    btn_tc = types.KeyboardButton('/TCs')
+    markup.add(btn_excel, btn_top, btn_dlc, btn_help, btn_tc, btn_stop)
     bot.send_message(chat_id, "Prem un botó per seleccionar una opció:", reply_markup=markup)
 
 # Inici del bot

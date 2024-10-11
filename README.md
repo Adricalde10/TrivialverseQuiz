@@ -29,7 +29,7 @@ TOKEN = '7455775782:AAGAnwCVb1yitZY-dXUMflFQPeOSY4WEyyc'
 bot = telebot.TeleBot(TOKEN)
 ```
 
-## Implementacion Archvi ODS
+## Implementacion Archivo ODS
 
 - Para que el bot nos muestre las preguntas hemos tenido que descargarlo del drive ja que no sabiamos como conjuntar el archivo drive, por eso lo hemos hecho de manera local descargando el archivo y poniendolo en la misma carpeta.
 
@@ -37,7 +37,6 @@ para ejecutar el archivo tenemos que utilitzar este comando
 
 ```
 ODS_FILE = 'Preguntas bot.ods'
-
 ```
 esto sirve para que encuentre el archivo
 
@@ -62,6 +61,10 @@ Muestra el ranking de jugadores (aún en desarrollo).
 5. **/dlc**
 
 Indica que el contenido adicional (DLC) está en desarrollo.
+
+6. **/TCs**
+
+Muestra los terminos legales
 
 ## Comandas Basicas de Telegram Bot
 
@@ -129,8 +132,11 @@ El bot puede enviar preguntas de trivia como:
 ¿Con qué se craftea un corazón del mar?
 
 A) Corazón del mar y prismarina
+
 B) Corazón del mar y pepitas de acero
+
 C) Corazón del mar y caparazones de nautilus
+
 D) Caparazones de nautilus, prismarina y piedra luminosa
 
 ## Puntuaciones
@@ -142,6 +148,16 @@ D) Caparazones de nautilus, prismarina y piedra luminosa
 ## Terminos Legales
 
 - Hemos añadido los terminos legales porque nosotros somos una empresa que colaborara con contras de empresas de esta industria de Anime y Videojuegos.
+
+### Tipos de contratos
+
+1. Contratos Temporales
+
+Este tipo de contrato lo utilizaremos para hacer un evento limitado en el bot, es decir este contrato lo utilizaremos para tener preguntas y respuesta solo port tiempo limitado, ja sea por nostros o por la empresa
+
+2. Contratos Indefinidos
+
+Utilizaremos este contrato para las preguntas mas principales, ja que este tipo de contrato es de tiempo indefinido y puede tener una larga duracion, el contrato se cancelara solo si la empresa lo quiere
 
 ## Finalizar Bot
 

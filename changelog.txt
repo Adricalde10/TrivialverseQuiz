@@ -1,0 +1,29 @@
+# Changelog
+
+Todas las modificaciones importantes de este proyecto se documentarán en este archivo.
+
+El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-1.0.0/) y este proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
+
+## [1.0.0] - 2024-10-11
+### Añadido
+- Primera versión funcional del bot TrivialverseQuiz.
+- Comandos `/start`, `/Quiz`, `/stop`, `/help`, `/top`, `/dlc`, y `/TCs` implementados.
+- Funcionalidad para leer preguntas desde un archivo ODS.
+- Lógica de preguntas aleatorias con categorías y opciones de respuesta.
+- Sistema de puntuación individual para cada usuario.
+- Implementación de un menú interactivo con botones para facilitar el uso del bot.
+- Inclusión de términos y condiciones mediante el comando `/TCs`.
+
+### Cambiado
+- Lógica de control de estado del juego y validación de respuestas mejorada.
+- Optimización del manejo de la puntuación de los jugadores.
+
+### Corregido
+- Error en la lectura del archivo ODS cuando el formato era incorrecto.
+- Problemas menores con la presentación de preguntas y respuestas.
+
+## [0.1.0] - 2024-10-01
+### Añadido
+- Estructura básica del bot creada.
+- Lectura preliminar de preguntas desde archivos de texto.
+- Comandos básicos `/start` y `/stop` implementados.
