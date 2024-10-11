@@ -16,11 +16,11 @@ pip install pyTelegramBotAPI
 ## Token
 
 - Para que el bot fucione hemos utilizado el BotFather para que nos genere un Token, el token en el codigo ira algo asi:
-
+```
 TOKEN = '7455775782:AAGAnwCVb1yitZY-dXUMflFQPeOSY4WEyyc'
 
 bot = telebot.TeleBot(TOKEN)
-
+```
 
 ## Funcionalidades y Comandos Principales
 
